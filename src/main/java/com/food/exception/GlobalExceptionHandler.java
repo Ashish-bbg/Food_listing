@@ -35,4 +35,10 @@ public class GlobalExceptionHandler {
 //		return ResponseEntity.badRequest().body("Validation Failed");
 	}
 
+	@ExceptionHandler(exception = UserNotFoundException.class)
+	public ResponseEntity<String> handleUserNotFound(UserNotFoundException ex){
+		
+		return ResponseEntity.badRequest().body(ex.getMessage());
+	}
+	
 }

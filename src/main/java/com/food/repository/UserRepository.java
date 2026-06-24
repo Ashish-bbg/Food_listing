@@ -9,12 +9,14 @@ import org.springframework.stereotype.Repository;
 import com.food.entity.User;
 
 
+
 @Repository
 public interface UserRepository extends JpaRepository<User, UUID>{
 	
 	boolean existsByEmail(String email);
 	
 	boolean existsByPhone(String phone);
+	
 	
 	Optional<User> findByEmail(String email);
 
