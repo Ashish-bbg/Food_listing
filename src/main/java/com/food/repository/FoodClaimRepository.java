@@ -4,9 +4,8 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.food.entity.FoodListing;
+import com.food.entity.FoodClaim;
 
-public interface FoodListingRepository extends JpaRepository<FoodListing, UUID> {
-	
+public interface FoodClaimRepository extends JpaRepository<FoodClaim, UUID>{
 
 }

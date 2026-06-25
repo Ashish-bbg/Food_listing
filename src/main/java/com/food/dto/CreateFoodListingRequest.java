@@ -3,7 +3,6 @@ package com.food.dto;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import com.food.enums.FoodStatus;
 import com.food.enums.FoodType;
 
 import jakarta.validation.constraints.DecimalMin;

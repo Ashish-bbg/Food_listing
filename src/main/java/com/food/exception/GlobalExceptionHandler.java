@@ -8,6 +8,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 	
@@ -38,6 +39,21 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(exception = UserNotFoundException.class)
 	public ResponseEntity<String> handleUserNotFound(UserNotFoundException ex){
 		
+		return ResponseEntity.badRequest().body(ex.getMessage());
+	}
+	
+	@ExceptionHandler(exception = FoodNotFoundException.class)
+	public ResponseEntity<String> handleFoodNotFound(FoodNotFoundException ex){
+		return ResponseEntity.badRequest().body(ex.getMessage());
+	}
+	
+	@ExceptionHandler(exception = NotEnoughFoodAvailableException.class)
+	public ResponseEntity<String> handleNotEnoughFoodAvailable(NotEnoughFoodAvailableException ex){
+		return ResponseEntity.badRequest().body(ex.getMessage());
+	}
+	
+	@ExceptionHandler(exception = FoodUnavailableException.class)
+	public ResponseEntity<String> handleFoodUnavailable(FoodUnavailableException ex){
 		return ResponseEntity.badRequest().body(ex.getMessage());
 	}
 	

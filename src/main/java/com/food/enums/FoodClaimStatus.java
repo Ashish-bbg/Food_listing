@@ -1,10 +1,10 @@
 package com.food.enums;
 
-public enum FoodStatus {
+public enum FoodClaimStatus {
 	
-	AVAILABLE,
+	PENDING,
 	RESERVED,
 	CLAIMED,
-	EXPIRED
+	CANCELLED
 
 }
