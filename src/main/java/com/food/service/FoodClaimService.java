@@ -11,4 +11,6 @@ public interface FoodClaimService {
 	
 	public void confirmFoodClaim(UUID id);
 	
+	public void cancelExpiredReservation();
+	
 }

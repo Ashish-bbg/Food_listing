@@ -57,4 +57,14 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.badRequest().body(ex.getMessage());
 	}
 	
+	@ExceptionHandler(exception = FoodClaimNotFoundException.class)
+	public ResponseEntity<String> handleFoodClaimNotFound(FoodClaimNotFoundException ex){
+		return ResponseEntity.badRequest().body(ex.getMessage());
+	}
+	
+	@ExceptionHandler(exception = InvalidClaimStateException.class)
+	public ResponseEntity<String> handleInvalidClaimState(InvalidClaimStateException ex){
+		return ResponseEntity.badRequest().body(ex.getMessage());
+	}
+	
 }

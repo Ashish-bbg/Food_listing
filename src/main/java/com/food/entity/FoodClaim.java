@@ -54,11 +54,13 @@ public class FoodClaim {
 	
 	private LocalDateTime claimedAt;
 	
+	private LocalDateTime cancelledAt;
+	
 	@PrePersist
 	public void prePersist() {
 		this.reservedAt = LocalDateTime.now();
 		this.status = FoodClaimStatus.RESERVED;
-		this.reservedUntil = reservedAt.plusHours(2);
+		this.reservedUntil = reservedAt.plusMinutes(2);
 	}
 	
 }
