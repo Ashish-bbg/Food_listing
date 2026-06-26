@@ -26,7 +26,7 @@ import com.food.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@Transactional
+//@Transactional
 @RequiredArgsConstructor
 public class FoodClaimServiceImpl implements FoodClaimService {
 
@@ -37,6 +37,7 @@ public class FoodClaimServiceImpl implements FoodClaimService {
 	private final FoodListingRepository foodListingRepository;
 
 	@Override
+	@Transactional
 	public FoodClaim claimFood(FoodClaimRequest request) {
 		userRepository.findById(request.getUserId())
 			.orElseThrow(()-> new UserNotFoundException("User not found"));
@@ -64,6 +65,13 @@ public class FoodClaimServiceImpl implements FoodClaimService {
 		}
 		
 		foodListing.setQuantity(availableFoodQuantity - reqFoodQuantity);
+		
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			
+			e.printStackTrace();
+		}
 		
 		foodListingRepository.save(foodListing);
 		
@@ -105,6 +113,7 @@ public class FoodClaimServiceImpl implements FoodClaimService {
 	}
 
 	@Override
+	@Transactional
 	public void cancelExpiredReservation() {
 				
 		List<FoodClaim> expiredClaims =  foodClaimRepository
