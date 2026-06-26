@@ -1,6 +1,8 @@
 # Food Waste Management System
 
-A Spring Boot application that helps reduce food waste by connecting food providers (NGOs, event hosts, restaurants, etc.) with people who can claim surplus food.
+A Spring Boot application that helps reduce food waste by connecting food providers (event hosts, NGOs, restaurants, etc.) with people who can reserve and claim surplus food before it expires.
+
+---
 
 ## Tech Stack
 
@@ -12,12 +14,14 @@ A Spring Boot application that helps reduce food waste by connecting food provid
 - Lombok
 - Jakarta Validation
 
+---
+
 ## Features Implemented
 
-### User Registration Module
+### User Management
 
-- Create new users
-- User roles:
+- Register new users
+- User roles
   - USER
   - NGO
   - EVENT_HOST
@@ -27,15 +31,66 @@ A Spring Boot application that helps reduce food waste by connecting food provid
 - Request validation using Jakarta Validation
 - Custom exception handling
 - Global exception handling
-- MySQL database integration
 
-### API Endpoints
+### Food Listing
+
+- Create food listings
+- Food type support
+  - VEG
+  - NON_VEG
+
+- Food availability status
+  - AVAILABLE
+  - RESERVED
+  - CLAIMED
+  - EXPIRED
+
+- Expiry time management
+- Host validation before creating listings
+
+### Food Reservation (Claim)
+
+- Reserve available food
+- Verify user existence
+- Verify food existence
+- Check available quantity
+- Prevent overbooking
+- Automatically reduce available quantity
+- Automatically reserve entire listing when quantity becomes zero
+- Reservation confirmation endpoint
+- Reservation status tracking
+  - RESERVED
+  - CLAIMED
+  - CANCELLED
+
+### Automatic Reservation Expiry
+
+- Scheduler checks expired reservations every 2 minutes
+- Automatically cancels expired reservations
+- Restores food quantity
+- Makes food available again
+- Batch updates using `saveAll()`
+
+### Validation & Exception Handling
+
+- Jakarta Bean Validation
+- Global Exception Handler
+- Custom Exceptions
+- Clean API error responses
+
+---
+
+## API Endpoints
+
+### User APIs
 
 #### Create User
 
-POST `/users`
+```http
+POST /users
+```
 
-Request:
+Request
 
 ```json
 {
@@ -46,11 +101,59 @@ Request:
 }
 ```
 
-Response:
+---
 
-```text
-User created Successfully
+### Food Listing APIs
+
+#### Create Food Listing
+
+```http
+POST /food-listings
 ```
+
+Request
+
+```json
+{
+  "foodName": "Veg Biryani",
+  "foodType": "VEG",
+  "quantity": 100,
+  "cost": 0,
+  "city": "Hyderabad",
+  "latitude": 17.385,
+  "longitude": 78.486,
+  "expiryTime": "2026-08-01T22:00:00",
+  "hostId": "USER_UUID"
+}
+```
+
+---
+
+### Food Claim APIs
+
+#### Reserve Food
+
+```http
+POST /food-claims
+```
+
+Request
+
+```json
+{
+  "foodId": "FOOD_UUID",
+  "userId": "USER_UUID",
+  "quantity": 20
+}
+```
+
+#### Confirm Food Claim
+
+```http
+POST /food-claims/{claimId}/confirm
+```
+
+---
 
 ## Project Structure
 
@@ -62,37 +165,93 @@ src/main/java/com/food
 ├── enums
 ├── exception
 ├── repository
+├── scheduler
 ├── service
 ```
 
-## Upcoming Features
+---
 
-- Food Listing Module
-- Food Claim Module
-- Location-based Search
-- Food Availability Alerts
-- NGO Verification
-- Authentication & Authorization
-- Notification Service
+## Current Workflow
+
+```text
+User Registration
+        │
+        ▼
+Food Listing Created
+        │
+        ▼
+User Reserves Food
+        │
+        ▼
+Food Quantity Reduced
+        │
+        ▼
+Food Reserved
+        │
+        ├──────────────► User Confirms Claim
+        │                     │
+        │                     ▼
+        │               Status = CLAIMED
+        │
+        └──────────────► Reservation Expires
+                              │
+                              ▼
+                     Scheduler Cancels Reservation
+                              │
+                              ▼
+                    Food Quantity Restored
+```
+
+---
 
 ## Current Status
 
-Version: v0.1
+### Version
 
-Completed:
+**v0.3**
 
-- User Entity
-- User Repository
-- User Service
-- User Controller
-- DTO Validation
-- Custom Exceptions
-- Global Exception Handler
+### Completed
 
-Work in Progress:
-
+- User Module
 - Food Listing Module
+- Food Reservation Module
+- Reservation Confirmation
+- Automatic Reservation Expiry Scheduler
+- DTO Validation
+- Global Exception Handling
+- Custom Exceptions
+- MySQL Integration
 
-```
+---
 
-```
+## Upcoming Features
+
+- JWT Authentication & Authorization
+- Role-based Access Control
+- Location-based Food Search
+- Nearby Food Listings
+- NGO Verification
+- Notifications
+- Image Upload
+- Claim History
+- Dashboard APIs
+- Docker Support
+- Unit & Integration Testing
+
+---
+
+## Future Improvements
+
+- Replace UUID references with JPA Relationships (`@ManyToOne`)
+- Optimize Scheduler to avoid N+1 queries
+- Add Database Indexes
+- Batch Processing for Large Data Sets
+- Event-driven Reservation Expiry
+- Production Logging
+- Monitoring & Metrics
+
+---
+
+## Learning Goals
+
+This project is being developed as a real-world backend application while learning Spring Boot, REST APIs, JPA, transactions, validation, schedulers, exception handling, and scalable backend design principles.
