@@ -18,7 +18,12 @@ public class ReservationExpiryScheduler {
 	
 	@Scheduled(fixedRate = 2 * MINUTE)
 	public void expiringReservation() {
+		try {
 			foodClaimService.cancelExpiredReservation();
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
 		
 	}
 

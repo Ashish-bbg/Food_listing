@@ -66,12 +66,12 @@ public class FoodClaimServiceImpl implements FoodClaimService {
 		
 		foodListing.setQuantity(availableFoodQuantity - reqFoodQuantity);
 		
-//		try {
-//			Thread.sleep(5000);
-//		} catch (InterruptedException e) {
-//			
-//			e.printStackTrace();
-//		}
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			
+			e.printStackTrace();
+		}
 		
 		foodListingRepository.save(foodListing);
 		
