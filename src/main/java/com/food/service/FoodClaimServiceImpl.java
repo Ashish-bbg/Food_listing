@@ -17,7 +17,6 @@ import com.food.exception.FoodClaimNotFoundException;
 import com.food.exception.FoodNotFoundException;
 import com.food.exception.FoodUnavailableException;
 import com.food.exception.InvalidClaimStateException;
-import com.food.exception.NotEnoughFoodAvailableException;
 import com.food.exception.UserNotFoundException;
 import com.food.repository.FoodClaimRepository;
 import com.food.repository.FoodListingRepository;
