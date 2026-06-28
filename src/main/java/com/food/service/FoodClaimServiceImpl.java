@@ -51,13 +51,13 @@ public class FoodClaimServiceImpl implements FoodClaimService {
 		}
 		
 		
-		try {
-			Thread.sleep(5000);
-		} catch (InterruptedException e) {
-			
-			e.printStackTrace();
-		}
-		
+//		try {
+//			Thread.sleep(5000);
+//		} catch (InterruptedException e) {
+//			
+//			e.printStackTrace();
+//		}
+//		
 		
 		
 		FoodClaim foodClaim = FoodClaim.builder()
