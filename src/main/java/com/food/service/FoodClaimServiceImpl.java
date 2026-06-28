@@ -42,29 +42,15 @@ public class FoodClaimServiceImpl implements FoodClaimService {
 		userRepository.findById(request.getUserId())
 			.orElseThrow(()-> new UserNotFoundException("User not found"));
 		
-		FoodListing foodListing = foodListingRepository.findById(request.getFoodId())
+		foodListingRepository.findById(request.getFoodId())
 			.orElseThrow(()-> new FoodNotFoundException("Food not found"));
 	
-		if(foodListing.getStatus() != FoodStatus.AVAILABLE) {
-			throw new FoodUnavailableException("Food is not available for claiming");
+		int foodUpdate = foodListingRepository.reserveFood(request.getFoodId(), request.getQuantity());
+		
+		if(foodUpdate == 0) {
+			throw new FoodUnavailableException("Food is unavailable or insufficient quantity");
 		}
 		
-		
-		
-		// checking req quantity and available quantity
-		Integer availableFoodQuantity = foodListing.getQuantity();
-		Integer reqFoodQuantity = request.getQuantity();
-		
-		if(reqFoodQuantity > availableFoodQuantity) {
-			throw new NotEnoughFoodAvailableException("Requested quantity exceeds available quantity");
-		}
-		
-		// checking if both are same if same then making food listing as RESERVED
-		if(availableFoodQuantity.equals(reqFoodQuantity)) {
-			foodListing.setStatus(FoodStatus.RESERVED);
-		}
-		
-		foodListing.setQuantity(availableFoodQuantity - reqFoodQuantity);
 		
 		try {
 			Thread.sleep(5000);
@@ -73,7 +59,6 @@ public class FoodClaimServiceImpl implements FoodClaimService {
 			e.printStackTrace();
 		}
 		
-		foodListingRepository.save(foodListing);
 		
 		
 		FoodClaim foodClaim = FoodClaim.builder()
@@ -95,13 +80,6 @@ public class FoodClaimServiceImpl implements FoodClaimService {
 		if(foodClaim.getStatus() != FoodClaimStatus.RESERVED) {
 			throw new InvalidClaimStateException("Sorry food is already claimed or cancelled");
 		}
-		
-//		FoodListing  foodListing = foodListingRepository.findById(foodClaim.getFoodId())
-//				.orElseThrow(()-> new RuntimeException());
-//		
-//		if(foodListing.getQuantity() == 0) {
-//			foodListing.setStatus(FoodStatus.CLAIMED);
-//		}
 		
 		foodClaim.setStatus(FoodClaimStatus.CLAIMED);
 		
