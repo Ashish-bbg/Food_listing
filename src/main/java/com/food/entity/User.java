@@ -45,6 +45,9 @@ public class User {
 	@Email(message = "Please enter valid email format")
 	private String email;
 	
+	@Column(nullable = false)
+	private String password;
+	
 	@NotBlank(message = "Phone number cannot be empty")
 	@Column(nullable = false, unique = true)
 	private String phone;

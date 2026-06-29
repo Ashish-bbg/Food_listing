@@ -6,25 +6,25 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.food.dto.CreateUserRequest;
-import com.food.entity.User;
-import com.food.service.UserService;
+import com.food.dto.LoginRequest;
+import com.food.service.AuthService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
+@RequestMapping("/auth")
 @RequiredArgsConstructor
-@RequestMapping("/users")
-public class UserController {
+public class AuthController {
 	
-	private final UserService userService;
+	private final AuthService authService;
 	
-	@PostMapping
-	public ResponseEntity<String> createUser(@Valid @RequestBody CreateUserRequest request) {
-		User user = userService.createUser(request);
+	@PostMapping("/login")
+	public ResponseEntity<String> login(@Valid @RequestBody LoginRequest request){
 		
-		return ResponseEntity.ok("User created Successfully " + user.getId());
+		authService.login(request);
+		
+		return ResponseEntity.ok("Login Successfully");
 	}
 
 }

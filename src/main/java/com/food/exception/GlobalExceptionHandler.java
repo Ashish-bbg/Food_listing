@@ -76,5 +76,11 @@ public class GlobalExceptionHandler {
 				.body("Someone else modified this food listing. Please try again.");
 	}
 	
+	@ExceptionHandler(exception = InvalidCredentialsException.class)
+	public ResponseEntity<String> handleInvalidCredential(InvalidCredentialsException ex){
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+				.body(ex.getMessage());
+	}
+	
 	
 }

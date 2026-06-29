@@ -1,5 +1,6 @@
 package com.food.service;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.food.dto.CreateUserRequest;
@@ -18,6 +19,8 @@ import lombok.RequiredArgsConstructor;
 public class UserServiceImpl implements UserService {
 	
 	private final UserRepository userRepository;
+	
+	private final PasswordEncoder passwordEncoder;
 
 	@Override
 	public User createUser(CreateUserRequest request) {
@@ -38,12 +41,14 @@ public class UserServiceImpl implements UserService {
 //		user.setPhone(request.getPhone());
 //		user.setRole(request.getRole());
 //		user.setVerificationStatus(VerificationStatus.PENDING);
+
 		
 		User user = User.builder()
 				.name(request.getName())
 				.email(request.getEmail())
 				.phone(request.getPhone())
 				.role(request.getRole())
+				.password(passwordEncoder.encode(request.getPassword()))
 				.verificationStatus(VerificationStatus.PENDING)
 				.build();
 		
