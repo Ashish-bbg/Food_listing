@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.food.dto.LoginRequest;
+import com.food.dto.LoginResponse;
 import com.food.service.AuthService;
 
 import jakarta.validation.Valid;
@@ -20,11 +21,11 @@ public class AuthController {
 	private final AuthService authService;
 	
 	@PostMapping("/login")
-	public ResponseEntity<String> login(@Valid @RequestBody LoginRequest request){
+	public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request){
 		
-		authService.login(request);
+		LoginResponse token = authService.login(request);
 		
-		return ResponseEntity.ok("Login Successfully");
+		return ResponseEntity.ok(token);
 	}
 
 }
