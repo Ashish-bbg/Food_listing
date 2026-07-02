@@ -3,12 +3,12 @@ package com.food.security;
 import java.io.IOException;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-import com.food.exception.UserNotFoundException;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -39,14 +39,30 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 		
 		String email = jwtService.extractEmail(token);
 		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		
-		UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
-		
-		if(email == null || userDetails.getUsername() == null || !email.equals(userDetails.getUsername())){
-			throw new UserNotFoundException("User not found:: "+ email);
+		if(email!=null && authentication == null) {
+			UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
+			
+			jwtService.isValidToken(token, userDetails);
+			
+			
+			UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+					new UsernamePasswordAuthenticationToken(
+							userDetails, 
+							null, 
+							userDetails.getAuthorities());
+			
+			usernamePasswordAuthenticationToken
+			.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+			
+			SecurityContextHolder
+				.getContext()
+				.setAuthentication(usernamePasswordAuthenticationToken);
+			
 		}
-		
-		UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =  new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+
+		filterChain.doFilter(request, response);
 		
 	}
 
