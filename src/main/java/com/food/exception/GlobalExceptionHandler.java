@@ -82,5 +82,19 @@ public class GlobalExceptionHandler {
 				.body(ex.getMessage());
 	}
 	
+	@ExceptionHandler(exception = InvalidTokenException.class)
+	public ResponseEntity<String> handleInvalidToken(InvalidTokenException ex){
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED) 
+				.body(ex.getMessage());
+	}
+	
+	@ExceptionHandler(exception = TokenExpiredException.class)
+	public ResponseEntity<String> handleTokenExpired(TokenExpiredException ex){
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED) 
+				.body(ex.getMessage());
+	}
+	
+	
+	
 	
 }

@@ -8,7 +8,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.food.entity.User;
-import com.food.enums.UserRole;
 
 import lombok.RequiredArgsConstructor;
 
