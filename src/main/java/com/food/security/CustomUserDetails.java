@@ -9,10 +9,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.food.entity.User;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
+@Getter
 public class CustomUserDetails implements UserDetails {
+
+	private static final long serialVersionUID = 1L;
 	private final User user;
 
 	@Override

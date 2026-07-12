@@ -1,6 +1,7 @@
 package com.food.security;
 
 import java.util.Date;
+
 import java.util.function.Function;
 
 import javax.crypto.SecretKey;
@@ -8,31 +9,44 @@ import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-
+import com.food.FoodApplication;
 import com.food.entity.User;
 import com.food.exception.InvalidTokenException;
 import com.food.exception.TokenExpiredException;
-import com.food.exception.UserNotFoundException;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class JwtService {
+
+    private final FoodApplication foodApplication;
 	
 	@Value("${jwt.secret}")
 	private String secret;
 	
 	@Value("${jwt.expiration}")
 	private long expiration;
+
+
+    JwtService(FoodApplication foodApplication) {
+        this.foodApplication = foodApplication;
+    }
 	
 	
 	private SecretKey getSigningKey() {
 		byte[] keyBytes = Decoders.BASE64.decode(secret);
 		
 		return Keys.hmacShaKeyFor(keyBytes);
+	}
+	
+	@PostConstruct
+	public void init() {
+		System.out.println("Secret: "+ secret);
+		System.out.println("Expiration: "+ expiration);
 	}
 	
 	public String generateToken(User user) {
