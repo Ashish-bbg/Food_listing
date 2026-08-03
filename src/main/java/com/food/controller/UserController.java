@@ -15,12 +15,12 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/users")
+@RequestMapping("/auth")
 public class UserController {
 	
 	private final UserService userService;
 	
-	@PostMapping
+	@PostMapping("/register")
 	public ResponseEntity<String> createUser(@Valid @RequestBody CreateUserRequest request) {
 		User user = userService.createUser(request);
 		

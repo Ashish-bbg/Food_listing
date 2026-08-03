@@ -6,6 +6,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -16,11 +17,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.food.security.CustomUserDetailsService;
 import com.food.security.JwtAuthenticationFilter;
+import com.food.security.exception.CustomAccessDeniedHandler;
+import com.food.security.exception.JwtAuthenticationEntryPoint;
 
 import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -29,6 +33,10 @@ public class SecurityConfig {
     private final CustomUserDetailsService customUserDetailsService;
     
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
 	
 	
@@ -62,8 +70,12 @@ public class SecurityConfig {
 				   )
 		   .authenticationProvider(authenticationProvider())
 		   .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+		   .exceptionHandling(exception -> exception
+				   .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+				   .accessDeniedHandler(customAccessDeniedHandler)
+				   )
 		   .authorizeHttpRequests(auth -> auth
-				   .requestMatchers("/auth/**").permitAll()
+				   .requestMatchers("/auth/**", "/error").permitAll()
 				   .anyRequest().authenticated())
 		   ;
 		   

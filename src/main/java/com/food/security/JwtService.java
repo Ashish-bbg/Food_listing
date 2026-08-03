@@ -1,7 +1,6 @@
 package com.food.security;
 
 import java.util.Date;
-
 import java.util.function.Function;
 
 import javax.crypto.SecretKey;
@@ -9,33 +8,27 @@ import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+
 import com.food.FoodApplication;
 import com.food.entity.User;
 import com.food.exception.InvalidTokenException;
 import com.food.exception.TokenExpiredException;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import jakarta.annotation.PostConstruct;
 
 @Service
 public class JwtService {
-
-    private final FoodApplication foodApplication;
 	
 	@Value("${jwt.secret}")
 	private String secret;
 	
 	@Value("${jwt.expiration}")
 	private long expiration;
-
-
-    JwtService(FoodApplication foodApplication) {
-        this.foodApplication = foodApplication;
-    }
-	
 	
 	private SecretKey getSigningKey() {
 		byte[] keyBytes = Decoders.BASE64.decode(secret);
@@ -43,11 +36,6 @@ public class JwtService {
 		return Keys.hmacShaKeyFor(keyBytes);
 	}
 	
-	@PostConstruct
-	public void init() {
-		System.out.println("Secret: "+ secret);
-		System.out.println("Expiration: "+ expiration);
-	}
 	
 	public String generateToken(User user) {
 		
@@ -62,11 +50,20 @@ public class JwtService {
 	}
 	
 	private Claims extractAllClaims(String token) {
-		return Jwts.parser()
-		.verifyWith(getSigningKey())
-		.build()
-		.parseSignedClaims(token)
-		.getPayload();
+		
+		try {
+			return Jwts.parser()
+			.verifyWith(getSigningKey())
+			.build()
+			.parseSignedClaims(token)
+			.getPayload();
+		} 
+		catch(ExpiredJwtException ex) {
+			throw new TokenExpiredException("JWT has expired");
+		}
+		catch(JwtException ex) {
+			throw new InvalidTokenException("Invalid JWT token");
+		}
 	}
 	
 	public <T> T extractClaim(String token, Function<Claims, T> resolver) {
@@ -85,23 +82,13 @@ public class JwtService {
 		return extractClaim(token, Claims::getExpiration);
 	}
 	
-	private boolean isTokenExpired(String token) {
-		return new Date().after(extractExpiration(token));
-	}
 	
-	public boolean isValidToken(String token, UserDetails userDetails) {
+	public boolean isValidToken(String email, UserDetails userDetails) {
 		
-		if(!extractEmail(token).equals(userDetails.getUsername())) {
+		if(!email.equals(userDetails.getUsername())) {
 			throw new InvalidTokenException("Token does not belong to the authenticated user");
 		}
-				
-		if(isTokenExpired(token)) { // means expired
-			throw new TokenExpiredException("JWT has expired");
-		}
-			
-		//Date creationJwt = extractClaim(token, Claims::getIssuedAt); // here i thought if our token expired in 15 min then we can do +15 to it and check but in our case we are not doing that
-		
-		
+						
 		
 		return true;
 	}
