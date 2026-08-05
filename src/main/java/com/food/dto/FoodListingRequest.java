@@ -19,7 +19,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateFoodListingRequest {
+public class FoodListingRequest {
 	
 	@NotBlank(message = "Food name cannot be empty")
 	private String foodName;
@@ -48,6 +48,4 @@ public class CreateFoodListingRequest {
 	@Future(message = "Expiry Time must be in the future")
 	private LocalDateTime expiryTime;
 	
-	@NotNull(message="HostId cannot be empty")
-	private UUID hostId;
 }
