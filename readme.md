@@ -6,13 +6,15 @@ A Spring Boot application that helps reduce food waste by connecting food provid
 
 # Tech Stack
 
-* Java 21
-* Spring Boot 3.5.x
-* Spring Data JPA
-* MySQL
-* Maven
-* Lombok
-* Jakarta Validation
+- Java 21
+- Spring Boot 3.5.x
+- Spring Data JPA
+- Spring Security
+- JWT (JSON Web Token)
+- MySQL
+- Maven
+- Lombok
+- Jakarta Validation
 
 ---
 
@@ -20,63 +22,62 @@ A Spring Boot application that helps reduce food waste by connecting food provid
 
 ## User Management
 
-* Register new users
-* User roles
+- Register new users
+- User roles
+  - USER
+  - NGO
+  - EVENT_HOST
 
-  * USER
-  * NGO
-  * EVENT_HOST
-* Email uniqueness validation
-* Phone number uniqueness validation
-* Request validation using Jakarta Bean Validation
-* Custom exception handling
-* Global exception handling
+- Email uniqueness validation
+- Phone number uniqueness validation
+- Request validation using Jakarta Bean Validation
+- Custom exception handling
+- Global exception handling
 
 ---
 
 ## Food Listing
 
-* Create food listings
-* Food type support
+- Create food listings
+- Food type support
+  - VEG
+  - NON_VEG
 
-  * VEG
-  * NON_VEG
-* Food availability status
+- Food availability status
+  - AVAILABLE
+  - RESERVED
+  - CLAIMED
+  - EXPIRED
 
-  * AVAILABLE
-  * RESERVED
-  * CLAIMED
-  * EXPIRED
-* Expiry time management
-* Host validation before creating food listings
+- Expiry time management
+- Automatically associates the authenticated user as the food listing owner
 
 ---
 
 ## Food Reservation (Claim)
 
-* Reserve available food
-* Verify user existence
-* Verify food existence
-* Validate requested quantity
-* Prevent overbooking
-* Automatically reduce available quantity
-* Automatically reserve the entire listing when quantity becomes zero
-* Reservation confirmation endpoint
-* Reservation status tracking
-
-  * RESERVED
-  * CLAIMED
-  * CANCELLED
+- Reserve available food
+- Verify user existence
+- Verify food existence
+- Validate requested quantity
+- Prevent overbooking
+- Automatically reduce available quantity
+- Automatically reserve the entire listing when quantity becomes zero
+- Reservation confirmation endpoint
+- Reservation status tracking
+  - RESERVED
+  - CLAIMED
+  - CANCELLED
 
 ---
 
 ## Automatic Reservation Expiry
 
-* Scheduler checks expired reservations every 2 minutes
-* Automatically cancels expired reservations
-* Restores reserved quantity
-* Makes food available again
-* Batch updates using `saveAll()`
+- Scheduler checks expired reservations every 2 minutes
+- Automatically cancels expired reservations
+- Restores reserved quantity
+- Makes food available again
+- Batch updates using `saveAll()`
 
 ---
 
@@ -86,9 +87,9 @@ While implementing the reservation module, a race condition was intentionally re
 
 Three different concurrency control strategies were implemented and tested:
 
-* Pessimistic Locking
-* Optimistic Locking
-* Atomic SQL Update
+- Pessimistic Locking
+- Optimistic Locking
+- Atomic SQL Update
 
 The final production implementation uses **Atomic SQL Update**, where availability validation, quantity deduction, and status update are performed as a single database operation, preventing concurrent overbooking while providing better scalability for inventory-style workloads.
 
@@ -96,35 +97,116 @@ The final production implementation uses **Atomic SQL Update**, where availabili
 
 ## Validation & Exception Handling
 
-* Jakarta Bean Validation
-* Global Exception Handler
-* Custom Exceptions
-* Clean API error responses
+- Jakarta Bean Validation
+- Global Exception Handler
+- Custom Exceptions
+- Clean API error responses
+
+## Authentication & Authorization
+
+- User Registration
+- User Login
+- Stateless JWT Authentication
+- Custom UserDetails implementation
+- Password Encryption using BCryptPasswordEncoder
+- Custom JWT Authentication Filter
+- AuthenticationManager & DaoAuthenticationProvider
+- SecurityContext-based user identification
+- Ownership validation using authenticated user
+- AuthenticationEntryPoint for Unauthorized Requests (401)
+- Custom AccessDeniedHandler for Forbidden Requests (403)
+- Token Validation
+- Invalid Token Handling
+- Expired Token Handling
+
+## Role-Based Access Control
+
+Role-based authorization using Spring Security.
+
+Example:
+
+- Only authenticated users can access protected APIs.
+- Food listing owners can update or delete only their own listings.
+- Unauthorized access returns proper HTTP status codes.
 
 ---
 
 # API Endpoints
 
-## User APIs
+## Authentication
 
-### Create User
+### Register
+
+POST /auth/register
+
+### Login
+
+POST /auth/login
+
+### Food Listing
+
+#### Create
+
+POST /food-listings
+
+#### Get All
+
+GET /food-listings
+
+#### Get By ID
+
+GET /food-listings/{id}
+
+#### Update
+
+PUT /food-listings/{id}
+
+#### Delete
+
+DELETE /food-listings/{id}
+
+---
+
+## Authentication Request Examples
+
+### Create User / Register User
 
 ```http
-POST /users
+POST /auth/register
 ```
 
 Request
 
 ```json
 {
-  "name": "Ashish",
-  "email": "ashish@gmail.com",
-  "phone": "9876543210",
-  "role": "NGO"
+  "name": "username",
+  "email": "username@gmail.com",
+  "password": "Test@123",
+  "role": "USER",
+  "phone": "9459578392"
 }
 ```
 
----
+Supported values:
+
+- USER
+- NGO
+- EVENT_HOST
+
+### Login User
+
+```http
+POST /auth/login
+```
+
+Request
+
+```json
+{
+  "email": "username@gmail.com",
+  "password": "Test@123"
+}
+```
 
 ## Food Listing APIs
 
@@ -138,23 +220,65 @@ Request
 
 ```json
 {
-  "foodName": "Veg Biryani",
+  "foodName": "Noodles",
   "foodType": "VEG",
-  "quantity": 100,
-  "cost": 0,
+  "quantity": 10,
+  "cost": 25,
   "city": "Hyderabad",
   "latitude": 17.385,
   "longitude": 78.486,
-  "expiryTime": "2026-08-01T22:00:00",
-  "hostId": "USER_UUID"
+  "expiryTime": "2026-08-10T22:00:00"
 }
 ```
 
----
+### Get All Food Listings
+
+```http
+GET /food-listings
+```
+
+### Get Food Listing By ID
+
+```http
+GET /food-listings/{id}
+```
+
+Example: `(d8caaaf5-c398-41bb-a532-fdbc59198906)`
+
+### Delete Food Listing
+
+```http
+DELETE /food-listings/{id}
+```
+
+Example: `(d8caaaf5-c398-41bb-a532-fdbc59198906)`
+
+### Update Food Listing
+
+```http
+PUT /food-listings/{id}
+```
+
+Example: `(d8caaaf5-c398-41bb-a532-fdbc59198906)`
+
+Request
+
+```json
+{
+  "foodName": "Chai pani",
+  "foodType": "VEG",
+  "quantity": 100,
+  "cost": 5,
+  "city": "Hyderabad",
+  "latitude": 17.385,
+  "longitude": 78.486,
+  "expiryTime": "2026-08-10T22:00:00"
+}
+```
 
 ## Food Claim APIs
 
-### Reserve Food
+### Claim Food
 
 ```http
 POST /food-claims
@@ -164,17 +288,48 @@ Request
 
 ```json
 {
-  "foodId": "FOOD_UUID",
-  "userId": "USER_UUID",
-  "quantity": 20
+  "foodId": "2447b307-b473-46ba-9496-efbf28a5f98a",
+  "userId": "00231477-19ab-442c-9df4-b2affaf65ff6",
+  "quantity": 10
 }
 ```
 
 ### Confirm Food Claim
 
 ```http
+POST /food-claims/eb192331-d0ce-49cf-8475-7f9a7489ba50/confirm
+```
+
+Request
+
+```json
+{}
+```
+
+### Update Food Listing
+
+Listing owners can update only their own food listings.
+
+### Delete Food Listing
+
+Listing owners can delete only their own food listings.
+
+### Confirm Food Claim
+
+```http
 POST /food-claims/{claimId}/confirm
 ```
+
+## Common HTTP Responses
+
+| Code | Meaning                              |
+| ---- | ------------------------------------ |
+| 200  | Success                              |
+| 201  | Created                              |
+| 400  | Validation Failed                    |
+| 401  | Unauthorized (Missing/Invalid JWT)   |
+| 403  | Forbidden (Insufficient Permissions) |
+| 404  | Resource Not Found                   |
 
 ---
 
@@ -183,16 +338,76 @@ POST /food-claims/{claimId}/confirm
 ```text
 src/main/java/com/food
 ├── controller
+├── configuration
 ├── dto
+├── ├── request
+├── └── response
 ├── entity
 ├── enums
 ├── exception
 ├── repository
+├── security
+├── └── exception
+├── └── JwtAuthenticationFilter
+├── └── JwtService
+├── └── CustomUserDetails
 ├── scheduler
 ├── service
 ```
 
 ---
+
+## Application Flow
+
+### Authentication Flow
+
+Every protected request first passes through Spring Security's filter chain where the JWT is validated before reaching the controller.
+
+```text
+          Client
+              │
+              ▼
+          JWT Token
+              │
+              ▼
+          Security Filter Chain
+              │
+              ▼
+          JWT Authentication Filter
+              │
+              ▼
+          Validate JWT
+              │
+              ▼
+          Load User Details
+              │
+              ▼
+          SecurityContext
+              │
+              ▼
+          Controller
+```
+
+### Food Listing Flow
+
+```text
+      Authenticated User
+              │
+              ▼
+      Create Food Listing
+              │
+              ▼
+      Food Saved
+              │
+              ▼
+      Get All Listings
+              │
+              ▼
+      Update Own Listing
+              │
+              ▼
+      Delete Own Listing
+```
 
 # Current Workflow
 
@@ -249,10 +464,10 @@ Each implementation was tested by reproducing concurrent reservation requests to
 
 Food reservation is implemented using a single JPQL update statement that:
 
-* Validates food availability
-* Checks requested quantity
-* Updates reservation status
-* Deducts available quantity
+- Validates food availability
+- Checks requested quantity
+- Updates reservation status
+- Deducts available quantity
 
 Because these operations are executed as a single database update, race conditions caused by concurrent requests are prevented.
 
@@ -270,67 +485,70 @@ The reservation process is executed inside a transaction. If any operation fails
 
 ## Version
 
-**v0.4**
+**v0.5**
 
 ## Completed
 
-* User Module
-* Food Listing Module
-* Food Reservation Module
-* Reservation Confirmation
-* Automatic Reservation Expiry Scheduler
-* Race Condition Handling
-* Atomic SQL Reservation
-* DTO Validation
-* Global Exception Handling
-* Custom Exceptions
-* MySQL Integration
+- User Registration
+- User Login
+- JWT Authentication
+- Role-Based Authorization
+- Food Listing CRUD
+- Ownership Validation
+- Custom Authentication Handlers
+- Food Reservation Module
+- Reservation Confirmation
+- Automatic Reservation Expiry Scheduler
+- Race Condition Handling
+- Atomic SQL Reservation
+- DTO Validation
+- Global Exception Handling
+- Custom Exceptions
+- MySQL Integration
 
 ---
 
 # Upcoming Features
 
-* JWT Authentication & Authorization
-* Role-based Access Control
-* Refresh Tokens
-* Location-based Food Search
-* Nearby Food Listings
-* NGO Verification
-* Notification Service
-* Image Upload
-* Claim History
-* Dashboard APIs
-* Docker Support
-* Unit & Integration Testing
+- Refresh Token Support
+- User Profile APIs
+- Pagination & Sorting
+- Search & Filtering
+- Nearby Food Listings (Location-Based Search)
+- NGO Verification Workflow
+- Email Notifications
+- Image Upload (Cloudinary/S3)
+- Admin Dashboard APIs
+- Docker & Docker Compose
+- Unit Testing (JUnit + Mockito)
+- Integration Testing
+- Swagger/OpenAPI Documentation
 
 ---
 
 # Future Improvements
 
-* Replace UUID references with JPA Relationships (`@ManyToOne`)
-* Optimize Scheduler to avoid N+1 queries
-* Add Database Indexes
-* Batch Processing for Large Data Sets
-* Event-driven Reservation Expiry
-* Production Logging
-* Monitoring & Metrics
+- Replace UUID references with JPA Relationships (`@ManyToOne`)
+- Optimize Scheduler to avoid N+1 queries
+- Add Database Indexes
+- Batch Processing for Large Data Sets
+- Event-driven Reservation Expiry
+- Production Logging
+- Monitoring & Metrics
 
 ---
 
 # Learning Goals
 
-This project is being developed as a real-world backend application while learning:
+This project is being built to gain hands-on experience with:
 
-* Spring Boot
-* REST API Design
-* Spring Data JPA
-* Transactions
-* Concurrency Control
-* Race Condition Prevention
-* Database Locking Strategies
-* Schedulers
-* Validation
-* Exception Handling
-* Scalable Backend Design
-* MySQL
-* Clean Architecture
+- Spring Boot
+- Spring Security
+- JWT Authentication
+- REST API Design
+- Spring Data JPA
+- MySQL
+- Exception Handling
+- Clean Architecture
+- Backend Best Practices
+- Scalable Application Design
