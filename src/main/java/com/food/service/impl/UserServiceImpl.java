@@ -1,4 +1,4 @@
-package com.food.service;
+package com.food.service.impl;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -9,6 +9,7 @@ import com.food.enums.VerificationStatus;
 import com.food.exception.EmailAlreadyExistsException;
 import com.food.exception.PhoneAlreadyExistsException;
 import com.food.repository.UserRepository;
+import com.food.service.UserService;
 
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;

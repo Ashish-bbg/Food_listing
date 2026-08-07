@@ -1,4 +1,4 @@
-package com.food.service;
+package com.food.service.impl;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,6 +13,7 @@ import com.food.exception.InvalidCredentialsException;
 import com.food.repository.UserRepository;
 import com.food.security.CustomUserDetails;
 import com.food.security.JwtService;
+import com.food.service.AuthService;
 
 import lombok.RequiredArgsConstructor;
 

@@ -13,4 +13,6 @@ public interface FoodClaimRepository extends JpaRepository<FoodClaim, UUID>{
 
 	public List<FoodClaim> findByStatusAndReservedUntilBefore(FoodClaimStatus status, LocalDateTime time);
 	
+	public List<FoodClaim> findByUserId(UUID id);
+	
 }
