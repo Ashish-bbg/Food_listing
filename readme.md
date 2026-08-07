@@ -68,6 +68,9 @@ A Spring Boot application that helps reduce food waste by connecting food provid
   - RESERVED
   - CLAIMED
   - CANCELLED
+- Claim ownership authorization
+- Expiration validation
+- Cancellation + quantity restoration
 
 ---
 
@@ -164,6 +167,14 @@ PUT /food-listings/{id}
 #### Delete
 
 DELETE /food-listings/{id}
+
+### Food claim
+
+GET /food-claims/my
+
+GET /food-claims/{id}
+
+PATCH /food-claims/{id}/cancel
 
 ---
 
@@ -289,7 +300,6 @@ Request
 ```json
 {
   "foodId": "2447b307-b473-46ba-9496-efbf28a5f98a",
-  "userId": "00231477-19ab-442c-9df4-b2affaf65ff6",
   "quantity": 10
 }
 ```
@@ -298,6 +308,38 @@ Request
 
 ```http
 POST /food-claims/eb192331-d0ce-49cf-8475-7f9a7489ba50/confirm
+```
+
+Request
+
+```json
+{}
+```
+
+### Get My Food Claim
+
+```http
+GET /food-claims/my
+```
+
+Request
+
+```json
+{}
+```
+
+```http
+GET /food-claims/{id}
+```
+
+Request
+
+```json
+{}
+```
+
+```http
+PATCH /food-claims/{id}/cancel
 ```
 
 Request
