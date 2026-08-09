@@ -21,4 +21,6 @@ public interface FoodClaimService {
 	
 	public FoodClaimResponse cancelFoodClaimById(UUID id);
 	
+	public List<FoodClaimResponse> getClaimsForMyFoodListings();
+	
 }

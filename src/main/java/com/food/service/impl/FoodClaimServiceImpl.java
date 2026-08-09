@@ -191,6 +191,21 @@ public class FoodClaimServiceImpl implements FoodClaimService {
 		return mapToResponse(claim);
 	}
 	
+	@Override
+	public List<FoodClaimResponse> getClaimsForMyFoodListings() {
+		
+		 List<FoodClaim> claims= foodClaimRepository.findClaimsByHostId(getCurrentUserId()); // by hostId
+		 
+		 List<FoodClaimResponse> foodClaimResponses = new ArrayList<>();
+			
+		for(FoodClaim claim: claims) {
+			foodClaimResponses.add(mapToResponse(claim));
+		}
+		
+		return foodClaimResponses;
+	}
+
+	
 	
 //	Get the current user
 	private UUID getCurrentUserId() {
@@ -233,6 +248,7 @@ public class FoodClaimServiceImpl implements FoodClaimService {
 		return foodClaim;
 		
 	}
+
 
 	
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import com.food.entity.FoodClaim;
 import com.food.enums.FoodClaimStatus;
@@ -15,4 +16,13 @@ public interface FoodClaimRepository extends JpaRepository<FoodClaim, UUID>{
 	
 	public List<FoodClaim> findByUserId(UUID id);
 	
+	@Query("""
+			
+			SELECT fc
+			FROM FoodClaim fc
+			join FoodListing f1 ON fc.foodId = f1.id
+			WHERE f1.hostId = :hostId
+			
+			""")
+	List<FoodClaim> findClaimsByHostId(UUID hostId);
 }
