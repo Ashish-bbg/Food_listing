@@ -2,11 +2,14 @@ package com.food.repository;
 
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import com.food.entity.FoodListing;
+import com.food.enums.FoodStatus;
 
 public interface FoodListingRepository extends JpaRepository<FoodListing, UUID> {
 	
@@ -23,6 +26,9 @@ public interface FoodListingRepository extends JpaRepository<FoodListing, UUID> 
 			AND f.quantity >= :quantity
 			AND f.status = 'AVAILABLE'
 			""")
+	
 	int reserveFood(UUID foodId, Integer quantity);
+	
+	Page<FoodListing> findByStatusNot(FoodStatus status, Pageable pageable);
 	
 }

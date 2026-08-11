@@ -1,7 +1,9 @@
 package com.food.service;
 
-import java.util.List;
 import java.util.UUID;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.food.dto.request.FoodListingRequest;
 import com.food.dto.response.FoodListingResponse;
@@ -11,7 +13,7 @@ public interface FoodListingService {
 
 	FoodListing createFoodListing(FoodListingRequest request);
 	
-	List<FoodListingResponse> getAllFoodListing();
+	Page<FoodListingResponse> getAllFoodListing(Pageable pageable);
 	
 	FoodListingResponse getFoodById(UUID id);
 	

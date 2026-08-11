@@ -1,9 +1,9 @@
 package com.food.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -51,18 +51,11 @@ public class FoodListingServiceImpl implements FoodListingService {
 
 //	Get Req All foods
 	@Override
-	public List<FoodListingResponse> getAllFoodListing() {
+	public Page<FoodListingResponse> getAllFoodListing(Pageable pageable) {
 		
-		List<FoodListing> foodLists = foodListingRepository.findAll();
-		
-		List<FoodListingResponse> foodListingResponse = new ArrayList<>();
-		
-		for(FoodListing foodListing: foodLists) {
-			if(foodListing.getStatus()!=FoodStatus.EXPIRED)
-				foodListingResponse.add(mapToResponse(foodListing));			
-		}
-		
-		return foodListingResponse;
+		Page<FoodListing> foodLists = foodListingRepository.findByStatusNot(FoodStatus.EXPIRED, pageable);
+				
+		return foodLists.map(this::mapToResponse);
 	}
 
 //  Get Req Get food by ID
