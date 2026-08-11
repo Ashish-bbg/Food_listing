@@ -1,4 +1,4 @@
-package com.food.dto;
+package com.food.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

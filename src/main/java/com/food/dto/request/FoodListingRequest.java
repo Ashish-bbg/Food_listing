@@ -1,4 +1,4 @@
-package com.food.dto;
+package com.food.dto.request;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

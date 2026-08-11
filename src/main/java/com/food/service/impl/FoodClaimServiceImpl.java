@@ -11,7 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.food.dto.FoodClaimRequest;
+import com.food.dto.request.FoodClaimRequest;
 import com.food.dto.response.FoodClaimResponse;
 import com.food.entity.FoodClaim;
 import com.food.entity.FoodListing;
@@ -45,9 +45,6 @@ public class FoodClaimServiceImpl implements FoodClaimService {
 	@Transactional
 	public FoodClaimResponse claimFood(FoodClaimRequest request) {
 		
-//		foodListingRepository.findById(request.getFoodId())
-//			.orElseThrow(()-> new FoodNotFoundException("Food not found"));
-//	
 		int foodUpdate = foodListingRepository.reserveFood(request.getFoodId(), request.getQuantity());
 		
 		if(foodUpdate == 0) {

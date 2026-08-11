@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.food.dto.FoodClaimRequest;
+import com.food.dto.request.FoodClaimRequest;
 import com.food.dto.response.FoodClaimResponse;
 import com.food.service.FoodClaimService;
 

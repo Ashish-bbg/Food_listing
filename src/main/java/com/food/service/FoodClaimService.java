@@ -3,7 +3,7 @@ package com.food.service;
 import java.util.List;
 import java.util.UUID;
 
-import com.food.dto.FoodClaimRequest;
+import com.food.dto.request.FoodClaimRequest;
 import com.food.dto.response.FoodClaimResponse;
 import com.food.entity.FoodClaim;
 

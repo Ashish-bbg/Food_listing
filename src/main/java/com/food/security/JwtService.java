@@ -40,8 +40,7 @@ public class JwtService {
 	public String generateToken(User user) {
 		
 		return Jwts.builder()
-		.subject(user.getEmail())
-		.claim("userID", user.getId().toString())
+		.subject(user.getId().toString())
 		.claim("role", user.getRole().name())
 		.issuedAt(new Date())
 		.expiration(new Date(System.currentTimeMillis() + expiration))
@@ -74,7 +73,11 @@ public class JwtService {
 		
 	}
 	
-	public String extractEmail(String token) {
+//	public String extractEmail(String token) {
+//		return extractClaim(token, Claims::getSubject);
+//	}
+	
+	public String extractUserId(String token) {
 		return extractClaim(token, Claims::getSubject);
 	}
 	
@@ -83,9 +86,9 @@ public class JwtService {
 	}
 	
 	
-	public boolean isValidToken(String email, UserDetails userDetails) {
+	public boolean isValidToken(String userId, UserDetails userDetails) {
 		
-		if(!email.equals(userDetails.getUsername())) {
+		if(!userId.equals(userDetails.getUsername())) {
 			throw new InvalidTokenException("Token does not belong to the authenticated user");
 		}
 						

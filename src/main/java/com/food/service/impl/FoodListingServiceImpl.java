@@ -9,7 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import com.food.dto.FoodListingRequest;
+import com.food.dto.request.FoodListingRequest;
 import com.food.dto.response.FoodListingResponse;
 import com.food.entity.FoodListing;
 import com.food.enums.FoodStatus;

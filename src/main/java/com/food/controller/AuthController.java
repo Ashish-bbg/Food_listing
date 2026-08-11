@@ -6,9 +6,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.food.dto.LoginRequest;
-import com.food.dto.LoginResponse;
+import com.food.dto.request.CreateUserRequest;
+import com.food.dto.request.LoginRequest;
+import com.food.dto.request.LoginResponse;
+import com.food.dto.response.UserResponse;
+import com.food.entity.User;
 import com.food.service.AuthService;
+import com.food.service.UserService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +24,8 @@ public class AuthController {
 	
 	private final AuthService authService;
 	
+	private final UserService userService;
+	
 	@PostMapping("/login")
 	public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request){
 		
@@ -27,5 +33,14 @@ public class AuthController {
 		
 		return ResponseEntity.ok(token);
 	}
+	
+	
+	@PostMapping("/register")
+	public ResponseEntity<String> createUser(@Valid @RequestBody CreateUserRequest request) {
+		UserResponse userResponse = userService.createUser(request);
+		
+		return ResponseEntity.ok("User created Successfully " + userResponse);
+	}
+
 
 }

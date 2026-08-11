@@ -14,51 +14,51 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.food.dto.FoodListingRequest;
+import com.food.dto.request.FoodListingRequest;
 import com.food.dto.response.FoodListingResponse;
 import com.food.service.FoodListingService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-	@RestController
-	@RequiredArgsConstructor
-	@RequestMapping("/food-listings")
-	public class FoodListingController {
-		
-		private final FoodListingService foodListingService;
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/food-listings")
+public class FoodListingController {
 	
-		// Create food listing
-		@PostMapping
-		@PreAuthorize("hasRole('EVENT_HOST')")
-		public ResponseEntity<String> createFoodListing(@Valid @RequestBody FoodListingRequest request){
-			
-			foodListingService.createFoodListing(request);
-			
-			return ResponseEntity.ok("Food listing created successfully");
-		}
+	private final FoodListingService foodListingService;
+
+	// Create food listing
+	@PostMapping
+	@PreAuthorize("hasRole('EVENT_HOST')")
+	public ResponseEntity<String> createFoodListing(@Valid @RequestBody FoodListingRequest request){
 		
-		// Get All food Listings
-		@GetMapping
-		public ResponseEntity<List<FoodListingResponse>> getAllFoodListings(){
-			return ResponseEntity.ok(foodListingService.getAllFoodListing());			
-		}
+		foodListingService.createFoodListing(request);
 		
-		// Get food by Id
-		@GetMapping("/{id}")
-		public ResponseEntity<FoodListingResponse> getFoodById(@PathVariable UUID id){
-			return ResponseEntity.ok(foodListingService.getFoodById(id));
-		}
-		
-		
-		@DeleteMapping("/{id}")
-		public ResponseEntity<String> deleteFoodById(@PathVariable UUID id){
-			return ResponseEntity.ok(foodListingService.deleteFoodById(id));
-		}
-		
-		@PutMapping("/{id}")
-		public ResponseEntity<FoodListingResponse> updateFoodById(@PathVariable UUID id, @RequestBody FoodListingRequest request){
-			return ResponseEntity.ok(foodListingService.updateFoodById(id, request));
-		}
-		
+		return ResponseEntity.ok("Food listing created successfully");
 	}
+	
+	// Get All food Listings
+	@GetMapping
+	public ResponseEntity<List<FoodListingResponse>> getAllFoodListings(){
+		return ResponseEntity.ok(foodListingService.getAllFoodListing());			
+	}
+	
+	// Get food by Id
+	@GetMapping("/{id}")
+	public ResponseEntity<FoodListingResponse> getFoodById(@PathVariable UUID id){
+		return ResponseEntity.ok(foodListingService.getFoodById(id));
+	}
+	
+	
+	@DeleteMapping("/{id}")
+	public ResponseEntity<String> deleteFoodById(@PathVariable UUID id){
+		return ResponseEntity.ok(foodListingService.deleteFoodById(id));
+	}
+	
+	@PutMapping("/{id}")
+	public ResponseEntity<FoodListingResponse> updateFoodById(@PathVariable UUID id, @Valid @RequestBody FoodListingRequest request){
+		return ResponseEntity.ok(foodListingService.updateFoodById(id, request));
+	}
+	
+}

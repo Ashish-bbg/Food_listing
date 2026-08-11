@@ -12,6 +12,8 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.food.scheduler.ReservationExpiryScheduler;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,7 +29,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 	private final CustomUserDetailsService customUserDetailsService;
 	
 	private final AuthenticationEntryPoint authenticationEntryPoint;
-	
+
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
@@ -43,15 +45,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 			
 			String token = authHeader.substring(7);
 			
-			String email = jwtService.extractEmail(token);
+			String userId = jwtService.extractUserId(token);
+			
+			//String email = jwtService.extractEmail(token);
 			
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			
-			if(email!=null && authentication == null) {
-				UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
+			if(userId!=null && authentication == null) {
+				UserDetails userDetails = customUserDetailsService.loadUserById(userId);
 				
-				jwtService.isValidToken(email, userDetails);
-				
+				jwtService.isValidToken(userId, userDetails);
 				
 				UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
 						new UsernamePasswordAuthenticationToken(

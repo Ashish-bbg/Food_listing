@@ -6,8 +6,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.food.dto.LoginRequest;
-import com.food.dto.LoginResponse;
+import com.food.dto.request.LoginRequest;
+import com.food.dto.request.LoginResponse;
 import com.food.entity.User;
 import com.food.exception.InvalidCredentialsException;
 import com.food.repository.UserRepository;
@@ -21,9 +21,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService{
 	
-//	private final UserRepository userRepository;
-	
-//	private final PasswordEncoder passwordEncoder;
 	
 	private final JwtService jwtService;
 	
@@ -31,16 +28,7 @@ public class AuthServiceImpl implements AuthService{
 	
 	@Override
 	public LoginResponse login(LoginRequest request) {
-		
-//		User user = userRepository.findByEmail(request.getEmail())
-//		.orElseThrow(()-> new InvalidCredentialsException("Invalid email or password"));
-//		
-//		boolean matches = passwordEncoder.matches(request.getPassword(), user.getPassword());
-//		
-//		if(!matches) {
-//			throw new InvalidCredentialsException("Invalid email or password");
-//		}
-		
+				
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(
 						request.getEmail(),

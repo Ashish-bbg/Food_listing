@@ -1,7 +1,7 @@
 package com.food.service;
 
-import com.food.dto.LoginRequest;
-import com.food.dto.LoginResponse;
+import com.food.dto.request.LoginRequest;
+import com.food.dto.request.LoginResponse;
 
 public interface AuthService {
 	

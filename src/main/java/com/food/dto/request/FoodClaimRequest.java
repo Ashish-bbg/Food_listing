@@ -1,4 +1,4 @@
-package com.food.dto;
+package com.food.dto.request;
 
 import java.util.UUID;
 
@@ -18,8 +18,8 @@ public class FoodClaimRequest {
 	@NotNull(message = "Food Id cannot be null")
 	private UUID foodId;
 	
-	@NotNull(message = "User Id cannot be null")
-	private UUID userId;
+//	@NotNull(message = "User Id cannot be null")
+//	private UUID userId;
 	
 	@NotNull(message = "Quantity field is required, it cannot be empty")
 	@Min(value = 1, message = "Quantity must be atleast 1")
