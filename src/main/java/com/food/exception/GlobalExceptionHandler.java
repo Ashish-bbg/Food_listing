@@ -99,7 +99,11 @@ public class GlobalExceptionHandler {
 				.body(ex.getMessage());
 	}
 	
-	
+	@ExceptionHandler(exception = SortArgumentException.class)
+	public ResponseEntity<String> handleSortArgument(SortArgumentException ex){
+		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE) 
+				.body(ex.getMessage());
+	}
 	
 	
 }

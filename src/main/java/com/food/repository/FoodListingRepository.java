@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.food.entity.FoodListing;
 import com.food.enums.FoodStatus;
+import com.food.enums.FoodType;
 
 public interface FoodListingRepository extends JpaRepository<FoodListing, UUID> {
 	
@@ -30,5 +31,8 @@ public interface FoodListingRepository extends JpaRepository<FoodListing, UUID> 
 	int reserveFood(UUID foodId, Integer quantity);
 	
 	Page<FoodListing> findByStatusNot(FoodStatus status, Pageable pageable);
+	
+	
+	Page<FoodListing> findByStatusNotAndFoodType(FoodStatus status, FoodType foodType, Pageable pageable);
 	
 }

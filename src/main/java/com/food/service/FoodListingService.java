@@ -8,12 +8,13 @@ import org.springframework.data.domain.Pageable;
 import com.food.dto.request.FoodListingRequest;
 import com.food.dto.response.FoodListingResponse;
 import com.food.entity.FoodListing;
+import com.food.enums.FoodType;
 
 public interface FoodListingService {
 
 	FoodListing createFoodListing(FoodListingRequest request);
 	
-	Page<FoodListingResponse> getAllFoodListing(Pageable pageable);
+	Page<FoodListingResponse> getAllFoodListing(FoodType foodType, Pageable pageable);
 	
 	FoodListingResponse getFoodById(UUID id);
 	

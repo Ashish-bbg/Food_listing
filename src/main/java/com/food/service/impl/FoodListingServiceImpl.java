@@ -13,6 +13,7 @@ import com.food.dto.request.FoodListingRequest;
 import com.food.dto.response.FoodListingResponse;
 import com.food.entity.FoodListing;
 import com.food.enums.FoodStatus;
+import com.food.enums.FoodType;
 import com.food.exception.FoodListingNotFoundException;
 import com.food.repository.FoodListingRepository;
 import com.food.security.CustomUserDetails;
@@ -51,11 +52,18 @@ public class FoodListingServiceImpl implements FoodListingService {
 
 //	Get Req All foods
 	@Override
-	public Page<FoodListingResponse> getAllFoodListing(Pageable pageable) {
+	public Page<FoodListingResponse> getAllFoodListing(FoodType foodType, Pageable pageable) {
 		
-		Page<FoodListing> foodLists = foodListingRepository.findByStatusNot(FoodStatus.EXPIRED, pageable);
-				
-		return foodLists.map(this::mapToResponse);
+		Page<FoodListing> foodListings;
+		
+		if(foodType != null) {
+			foodListings = foodListingRepository.findByStatusNotAndFoodType(FoodStatus.EXPIRED, foodType, pageable);
+		} else {
+			foodListings = foodListingRepository.findByStatusNot(FoodStatus.EXPIRED, pageable);
+			
+		}
+						
+		return foodListings.map(this::mapToResponse);
 	}
 
 //  Get Req Get food by ID
