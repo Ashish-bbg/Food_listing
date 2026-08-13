@@ -170,9 +170,23 @@ DELETE /food-listings/{id}
 
 ### Food claim
 
+#### Get Logged in user claims
+
 GET /food-claims/my
 
+#### Get Claim by id
+
 GET /food-claims/{id}
+
+#### Get Host claims
+
+GET /food-claims/HOST
+
+#### Logged in user confirm
+
+POST /food-claims/{id}/confirm
+
+#### Cancel the claim
 
 PATCH /food-claims/{id}/cancel
 
@@ -256,7 +270,7 @@ GET /food-listings/{id}
 
 Example: `(d8caaaf5-c398-41bb-a532-fdbc59198906)`
 
-### Delete Food Listing
+### Delete Food Listing Only Host can delete
 
 ```http
 DELETE /food-listings/{id}
@@ -264,7 +278,7 @@ DELETE /food-listings/{id}
 
 Example: `(d8caaaf5-c398-41bb-a532-fdbc59198906)`
 
-### Update Food Listing
+### Update Food Listing Only Host can Update
 
 ```http
 PUT /food-listings/{id}
@@ -544,6 +558,8 @@ The reservation process is executed inside a transaction. If any operation fails
 - Race Condition Handling
 - Atomic SQL Reservation
 - DTO Validation
+- Pagination & Sorting
+- Search & Filtering
 - Global Exception Handling
 - Custom Exceptions
 - MySQL Integration
@@ -554,8 +570,6 @@ The reservation process is executed inside a transaction. If any operation fails
 
 - Refresh Token Support
 - User Profile APIs
-- Pagination & Sorting
-- Search & Filtering
 - Nearby Food Listings (Location-Based Search)
 - NGO Verification Workflow
 - Email Notifications
