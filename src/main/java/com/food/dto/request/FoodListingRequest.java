@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import com.food.enums.FoodType;
 
+import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Min;
@@ -39,8 +40,12 @@ public class FoodListingRequest {
 	@NotBlank(message="City cannot be empty")
 	private String city;
 	
+	@DecimalMin(value="-90")
+	@DecimalMax(value="90")
 	private Double latitude;
 	
+	@DecimalMin(value="-180")
+	@DecimalMax(value="180")
 	private Double longitude;
 	
 	

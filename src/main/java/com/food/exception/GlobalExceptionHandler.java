@@ -105,5 +105,11 @@ public class GlobalExceptionHandler {
 				.body(ex.getMessage());
 	}
 	
+	@ExceptionHandler(exception = LocationArgumentException.class)
+	public ResponseEntity<String> locationArgument(LocationArgumentException ex){
+		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
+				.body(ex.getMessage());
+	}
+	
 	
 }

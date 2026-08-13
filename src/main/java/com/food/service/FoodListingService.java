@@ -14,7 +14,16 @@ public interface FoodListingService {
 
 	FoodListing createFoodListing(FoodListingRequest request);
 	
-	Page<FoodListingResponse> getAllFoodListing(FoodType foodType, Pageable pageable);
+	Page<FoodListingResponse> getAllFoodListing(
+			FoodType foodType,
+			String city,
+			Double maxCost,
+			Double minCost,
+			Integer minQuantity,
+			Double latitude,
+			Double longitude,
+			Double radiusKm,
+			Pageable pageable);
 	
 	FoodListingResponse getFoodById(UUID id);
 	

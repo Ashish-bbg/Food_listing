@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.food.dto.request.FoodListingRequest;
 import com.food.dto.response.FoodListingResponse;
 import com.food.enums.FoodType;
+import com.food.exception.LocationArgumentException;
 import com.food.exception.SortArgumentException;
 import com.food.service.FoodListingService;
 
@@ -52,6 +53,13 @@ public class FoodListingController {
 	@GetMapping
 	public ResponseEntity<Page<FoodListingResponse>> getAllFoodListings(
 			@RequestParam(required = false) FoodType foodType,
+			@RequestParam(required = false) String city,
+			@RequestParam(required = false) Double maxCost,			
+			@RequestParam(required = false) Double minCost,			
+			@RequestParam(required = false) Integer minQuantity,			
+			@RequestParam(required = false) Double latitude,			
+			@RequestParam(required = false) Double longitude,			
+			@RequestParam(required = false) Double radiusKm,			
 			@PageableDefault(
 					page=0,
 					size=10,
@@ -59,9 +67,16 @@ public class FoodListingController {
 					direction=Sort.Direction.DESC) 
 			Pageable pageable){
 		
+		validateLocation(latitude, longitude, radiusKm);
 		pageable = validatePageable(pageable);
 	
-		return ResponseEntity.ok(foodListingService.getAllFoodListing(foodType, pageable));			
+		return ResponseEntity.ok(
+				foodListingService
+				.getAllFoodListing(foodType, city,
+						maxCost, minCost,
+						minQuantity,
+						latitude, longitude, radiusKm,
+						pageable));			
 	
 	}
 	
@@ -73,11 +88,13 @@ public class FoodListingController {
 	
 	
 	@DeleteMapping("/{id}")
+	@PreAuthorize("hasRole('EVENT_HOST')")
 	public ResponseEntity<String> deleteFoodById(@PathVariable UUID id){
 		return ResponseEntity.ok(foodListingService.deleteFoodById(id));
 	}
 	
 	@PutMapping("/{id}")
+	@PreAuthorize("hasRole('EVENT_HOST')")
 	public ResponseEntity<FoodListingResponse> updateFoodById(@PathVariable UUID id, @Valid @RequestBody FoodListingRequest request){
 		return ResponseEntity.ok(foodListingService.updateFoodById(id, request));
 	}
@@ -92,6 +109,28 @@ public class FoodListingController {
 			}
 		}
 		return pageable;
+	}
+	
+	private void validateLocation(Double latitude, Double longitude, Double radiusKm) {
+		
+		if(latitude != null && (latitude < -90 || latitude > 90)) {
+			throw new LocationArgumentException("Latitude must be between -90 and 90");
+		}
+		
+		if (longitude != null && (longitude < -180 || longitude > 180)) {
+		        throw new LocationArgumentException("Longitude must be between -180 and 180");
+		}
+		
+		if(radiusKm != null && radiusKm <=0) {
+			 throw new LocationArgumentException("Radius must be greater than 0");
+		}
+		
+		if((latitude != null || longitude !=null || radiusKm !=null ) &&
+				(latitude == null || longitude == null || radiusKm == null)) {
+			throw new LocationArgumentException("Latitude, longitude and radiusKm must be provided together");
+		}
+		 
+		
 	}
 	
 }

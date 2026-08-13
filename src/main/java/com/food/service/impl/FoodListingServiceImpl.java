@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,6 +19,7 @@ import com.food.exception.FoodListingNotFoundException;
 import com.food.repository.FoodListingRepository;
 import com.food.security.CustomUserDetails;
 import com.food.service.FoodListingService;
+import com.food.specification.FoodListingSpecification;
 
 import lombok.RequiredArgsConstructor;
 
@@ -52,17 +54,51 @@ public class FoodListingServiceImpl implements FoodListingService {
 
 //	Get Req All foods
 	@Override
-	public Page<FoodListingResponse> getAllFoodListing(FoodType foodType, Pageable pageable) {
-		
-		Page<FoodListing> foodListings;
+	public Page<FoodListingResponse> getAllFoodListing(
+			FoodType foodType,
+			String city, 
+			Double maxCost,
+			Double minCost,
+			Integer minQuantity,
+			Double latitude,
+			Double longitude,
+			Double radiusKm,
+			Pageable pageable) {
+			
+		Specification<FoodListing> specification = FoodListingSpecification.isNotExpired();
 		
 		if(foodType != null) {
-			foodListings = foodListingRepository.findByStatusNotAndFoodType(FoodStatus.EXPIRED, foodType, pageable);
-		} else {
-			foodListings = foodListingRepository.findByStatusNot(FoodStatus.EXPIRED, pageable);
-			
+			specification = specification.and(FoodListingSpecification
+					.hasFoodType(foodType));
 		}
-						
+		
+		if(city != null && !city.isBlank()) {
+			specification = specification.and(FoodListingSpecification
+					.hasCity(city));
+		}
+		
+		if(maxCost != null ) {
+			specification = specification.and(FoodListingSpecification
+					.hasMaxCost(maxCost));
+		}
+		
+		if(minCost != null) {
+			specification = specification.and(FoodListingSpecification
+					.hasMinCost(minCost));
+		}
+		
+		if(minQuantity != null) {
+			specification = specification.and(FoodListingSpecification
+					.hasMinQuantity(minQuantity));
+		}
+		
+		if(latitude != null && longitude != null && radiusKm != null) {
+			specification = specification.and(FoodListingSpecification
+					.withinDistance(latitude, longitude, radiusKm));
+		}
+
+		 Page<FoodListing> foodListings = foodListingRepository.findAll(specification, pageable);
+		
 		return foodListings.map(this::mapToResponse);
 	}
 
