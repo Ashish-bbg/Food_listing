@@ -1,6 +1,7 @@
 package com.food.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,9 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.food.dto.request.CreateUserRequest;
 import com.food.dto.request.LoginRequest;
-import com.food.dto.request.LoginResponse;
+import com.food.dto.request.RefreshTokenRequest;
+import com.food.dto.response.LoginResponse;
 import com.food.dto.response.UserResponse;
-import com.food.entity.User;
 import com.food.service.AuthService;
 import com.food.service.UserService;
 
@@ -42,5 +43,19 @@ public class AuthController {
 		return ResponseEntity.ok("User created Successfully " + userResponse);
 	}
 
+	@PostMapping("/refresh")
+	public ResponseEntity<LoginResponse> refreshToken(@Valid @RequestBody RefreshTokenRequest request){
+		return ResponseEntity.ok(authService.refreshToken(request));
+	}
+	
+	@PostMapping("/logout")
+	@PreAuthorize("isAuthenticated()")
+	public ResponseEntity<String> logout(){
+		
+		authService.logout();
+		
+		return ResponseEntity.ok("Logout successfully");
+		
+	}
 
 }

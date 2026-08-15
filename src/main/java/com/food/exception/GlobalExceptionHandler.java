@@ -10,9 +10,19 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import lombok.extern.slf4j.Slf4j;
+
 
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
+	
+	@ExceptionHandler(exception = Exception.class)
+	public ResponseEntity<String> handleExc(Exception ex){
+		System.out.println(ex);
+		log.error("An error occured pls check... {}", ex.getMessage(), ex);
+		return ResponseEntity.internalServerError().body("Internal Server error, we are working on it...");
+	}
 	
 	@ExceptionHandler(exception = EmailAlreadyExistsException.class)
 	public ResponseEntity<String> handleEmailExists(EmailAlreadyExistsException ex) {

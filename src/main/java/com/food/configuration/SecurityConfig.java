@@ -76,7 +76,7 @@ public class SecurityConfig {
 				   .accessDeniedHandler(customAccessDeniedHandler)
 				   )
 		   .authorizeHttpRequests(auth -> auth
-				   .requestMatchers("/auth/**", "/error").permitAll()
+				   .requestMatchers("/auth/login", "auth/register", "auth/refresh", "/error/**").permitAll()
 				   .requestMatchers(HttpMethod.GET, "/food-listings", "/food-listings/{id}").permitAll()
 				   .anyRequest().authenticated())
 		   ;

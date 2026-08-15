@@ -556,10 +556,12 @@ The reservation process is executed inside a transaction. If any operation fails
 - Reservation Confirmation
 - Automatic Reservation Expiry Scheduler
 - Race Condition Handling
+- User Profile APIs
 - Atomic SQL Reservation
 - DTO Validation
 - Pagination & Sorting
 - Search & Filtering
+- Nearby Food Listings (Location-Based Search)
 - Global Exception Handling
 - Custom Exceptions
 - MySQL Integration
@@ -569,8 +571,6 @@ The reservation process is executed inside a transaction. If any operation fails
 # Upcoming Features
 
 - Refresh Token Support
-- User Profile APIs
-- Nearby Food Listings (Location-Based Search)
 - NGO Verification Workflow
 - Email Notifications
 - Image Upload (Cloudinary/S3)
