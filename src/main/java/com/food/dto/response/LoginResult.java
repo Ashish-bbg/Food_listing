@@ -11,10 +11,10 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginResponse {
-
+public class LoginResult {
+	
 	private String accessToken;
 	
-//	private String refreshToken;
-	
+	private String refreshToken;
+
 }

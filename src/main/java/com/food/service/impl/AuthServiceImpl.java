@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.food.dto.request.LoginRequest;
 import com.food.dto.request.RefreshTokenRequest;
 import com.food.dto.response.LoginResponse;
+import com.food.dto.response.LoginResult;
 import com.food.entity.RefreshToken;
 import com.food.entity.User;
 import com.food.exception.UserNotFoundException;
@@ -39,7 +40,7 @@ public class AuthServiceImpl implements AuthService{
 
 	
 	@Override
-	public LoginResponse login(LoginRequest request) {
+	public LoginResult login(LoginRequest request) {
 				
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(
@@ -54,22 +55,31 @@ public class AuthServiceImpl implements AuthService{
 		String accessToken = jwtService.generateToken(user);
 		
 		RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getId());
-		
-		return new LoginResponse(accessToken, refreshToken.getToken());
+				
+		return LoginResult.builder()
+				.accessToken(accessToken)
+				.refreshToken(refreshToken.getToken())
+				.build();
 		
 	}
 
 	@Override
-	public LoginResponse refreshToken(RefreshTokenRequest request) {
+	public LoginResult refreshToken(String token) {
 		
-		RefreshToken refreshToken = refreshTokenService.verifyRefreshToken(request.getRefreshToken());
+		RefreshToken oldRefreshToken = refreshTokenService.verifyRefreshToken(token);
 		
-		User user = userRepository.findById(refreshToken.getUserId())
+		User user = userRepository.findById(oldRefreshToken.getUserId())
 			.orElseThrow(()-> new UserNotFoundException("User not found"));
 		
 		String accessToken = jwtService.generateToken(user);
 		
-		return new LoginResponse(accessToken, refreshToken.getToken());
+		
+		RefreshToken newRefreshToken = refreshTokenService.createRefreshToken(user.getId());
+		
+		return LoginResult.builder()
+				.accessToken(accessToken)
+				.refreshToken(newRefreshToken.getToken())
+				.build();
 	}
 
 	@Override
