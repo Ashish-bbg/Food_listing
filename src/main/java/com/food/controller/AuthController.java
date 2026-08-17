@@ -30,6 +30,8 @@ public class AuthController {
 	
 	private final UserService userService;
 	
+	private static final int REFRESH_TOKEN_MAX_AGE = 30 * 24 * 60 * 60;
+	
 	@PostMapping("/login")
 	public ResponseEntity<LoginResponse> login(
 			@Valid @RequestBody LoginRequest request,
@@ -39,14 +41,7 @@ public class AuthController {
 		
 		LoginResult result = authService.login(request);
 		
-		Cookie refreshCookie = new Cookie("refreshToken", result.getRefreshToken());
-		
-		refreshCookie.setHttpOnly(true);
-		refreshCookie.setSecure(false); // in production true for localhost testing false
-		refreshCookie.setPath("/auth/refresh");
-		refreshCookie.setMaxAge(30 * 24 * 60 * 60);
-		
-		response.addCookie(refreshCookie);
+		setRefreshCookie(response, result.getRefreshToken(), REFRESH_TOKEN_MAX_AGE);
 		
 		return ResponseEntity.ok(
 				new LoginResponse(result.getAccessToken())
@@ -68,14 +63,7 @@ public class AuthController {
 		
 		LoginResult result = authService.refreshToken(refreshToken);
 		
-		Cookie refreshCookie = new Cookie("refreshToken", result.getRefreshToken());	
-		
-		refreshCookie.setHttpOnly(true);
-		refreshCookie.setSecure(false); // local HTTP only
-		refreshCookie.setPath("/auth/refresh");
-		refreshCookie.setMaxAge(30 * 24 * 60 * 60);
-		
-		response.addCookie(refreshCookie);
+		setRefreshCookie(response, result.getRefreshToken(), REFRESH_TOKEN_MAX_AGE);
 		
 		return ResponseEntity.ok(
 				new LoginResponse(result.getAccessToken())
@@ -89,17 +77,22 @@ public class AuthController {
 		
 		authService.logout();
 		
-		Cookie refreshCookie = new Cookie("refreshToken", null);
-		
-		refreshCookie.setHttpOnly(true);
-		refreshCookie.setSecure(false);
-		refreshCookie.setPath("/auth/refresh");
-		refreshCookie.setMaxAge(0);
-		
-		response.addCookie(refreshCookie);
+		setRefreshCookie(response, null, 0);
 		
 		return ResponseEntity.ok("Logout successfully");
 		
+	}
+	
+	private void setRefreshCookie(HttpServletResponse response, String token, int maxAge) {
+		
+		Cookie refreshCookie = new Cookie("refreshToken", token);	
+		
+		refreshCookie.setHttpOnly(true);
+		refreshCookie.setSecure(false); // local HTTP only, in production true for localhost testing false
+		refreshCookie.setPath("/auth/refresh");
+		refreshCookie.setMaxAge(maxAge);
+		
+		response.addCookie(refreshCookie);
 	}
 
 }
