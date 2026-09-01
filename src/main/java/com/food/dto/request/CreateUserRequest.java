@@ -1,10 +1,7 @@
 package com.food.dto.request;
 
-import com.food.enums.UserRole;
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,7 +29,7 @@ public class CreateUserRequest {
 	@NotBlank(message = "Phone number cannot be empty")
 	private String phone;
 	
-	@NotNull(message = "Role cannot be empty")
-	private UserRole role;
+//	@NotNull(message = "Role cannot be empty")
+//	private UserRole role;
 	
 }

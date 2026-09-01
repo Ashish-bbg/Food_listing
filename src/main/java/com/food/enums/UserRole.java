@@ -4,6 +4,7 @@ public enum UserRole {
 
 	USER,
 	NGO,
-	EVENT_HOST
+	EVENT_HOST,
+	ADMIN
 	
 }

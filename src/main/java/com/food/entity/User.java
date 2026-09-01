@@ -3,8 +3,8 @@ package com.food.entity;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import com.food.enums.RoleRequestStatus;
 import com.food.enums.UserRole;
-import com.food.enums.VerificationStatus;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -52,13 +52,10 @@ public class User {
 	@Column(nullable = false, unique = true)
 	private String phone;
 	
+	@Builder.Default 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable=false)
-	private UserRole role;
-	
-	@Enumerated(EnumType.STRING)
-	@Column(nullable=false)
-	private VerificationStatus verificationStatus;
+	private UserRole role = UserRole.USER;
 	
 	@Column(nullable=false, updatable = false)
 	private LocalDateTime createdAt;

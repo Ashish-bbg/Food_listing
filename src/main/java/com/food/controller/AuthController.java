@@ -50,10 +50,10 @@ public class AuthController {
 	
 	
 	@PostMapping("/register")
-	public ResponseEntity<String> createUser(@Valid @RequestBody CreateUserRequest request) {
+	public ResponseEntity<UserResponse> createUser(@Valid @RequestBody CreateUserRequest request) {
 		UserResponse userResponse = userService.createUser(request);
 		
-		return ResponseEntity.ok("User created Successfully " + userResponse);
+		return ResponseEntity.ok(userResponse);
 	}
 
 	@PostMapping("/refresh")

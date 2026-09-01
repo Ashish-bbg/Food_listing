@@ -1,36 +1,30 @@
 package com.food.dto.response;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import com.food.enums.RoleRequestStatus;
 import com.food.enums.UserRole;
 
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Setter
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserResponse {
+public class RoleRequestResponse {
 
 	private UUID id;
 	
-	private String name;
+	private UserRole requestedRole;
 	
-	private String email;
+	private RoleRequestStatus status;
+		
+	private LocalDateTime createdAt;
 	
-	private String phone;
-	
-	@Enumerated(EnumType.STRING)
-	private UserRole role;
-	
-	@Enumerated(EnumType.STRING)
-	private RoleRequestStatus roleRequestStatus;
 }

@@ -3,6 +3,7 @@ package com.food.service.impl;
 import java.util.UUID;
 
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,6 +15,7 @@ import com.food.dto.response.LoginResponse;
 import com.food.dto.response.LoginResult;
 import com.food.entity.RefreshToken;
 import com.food.entity.User;
+import com.food.exception.InvalidCredentialsException;
 import com.food.exception.UserNotFoundException;
 import com.food.repository.UserRepository;
 import com.food.security.CustomUserDetails;
@@ -42,11 +44,18 @@ public class AuthServiceImpl implements AuthService{
 	@Override
 	public LoginResult login(LoginRequest request) {
 				
-		Authentication authentication = authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(
-						request.getEmail(),
-						request.getPassword())
-				);
+		Authentication authentication;
+		
+		try {
+			authentication = authenticationManager.authenticate(
+					new UsernamePasswordAuthenticationToken(
+							request.getEmail(),
+							request.getPassword()
+						)
+					);
+		} catch (BadCredentialsException ex) {
+			throw new InvalidCredentialsException("Invalid email or password");
+		}
 		
 		CustomUserDetails details =  (CustomUserDetails) authentication.getPrincipal();
 		

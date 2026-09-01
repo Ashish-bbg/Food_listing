@@ -1,9 +1,9 @@
 package com.food.enums;
 
-public enum VerificationStatus {
+public enum RoleRequestStatus {
 	
 	PENDING,
-	VERIFIED,
+	APPROVED,
 	REJECTED
 	
 }

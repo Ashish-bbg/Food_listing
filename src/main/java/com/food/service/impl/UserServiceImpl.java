@@ -9,7 +9,7 @@ import com.food.dto.request.CreateUserRequest;
 import com.food.dto.request.UserRequest;
 import com.food.dto.response.UserResponse;
 import com.food.entity.User;
-import com.food.enums.VerificationStatus;
+import com.food.enums.RoleRequestStatus;
 import com.food.exception.EmailAlreadyExistsException;
 import com.food.exception.PhoneAlreadyExistsException;
 import com.food.exception.UserNotFoundException;
@@ -29,6 +29,8 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserResponse createUser(CreateUserRequest request) {
+		
+		
 		boolean emailExist = userRepository.existsByEmail(request.getEmail()); 
 		boolean phoneExist = userRepository.existsByPhone(request.getPhone());
 		
@@ -43,9 +45,7 @@ public class UserServiceImpl implements UserService {
 				.name(request.getName())
 				.email(request.getEmail())
 				.phone(request.getPhone())
-				.role(request.getRole())
 				.password(passwordEncoder.encode(request.getPassword()))
-				.verificationStatus(VerificationStatus.PENDING)
 				.build();
 		
 		return mapToUserResponse(userRepository.save(user));
@@ -93,7 +93,6 @@ public class UserServiceImpl implements UserService {
 		 		.email(user.getEmail())
 		 		.phone(user.getPhone())
 		 		.role(user.getRole())
-			 	.verificationStatus(user.getVerificationStatus())
 		 		.build();
 		
 	}
@@ -106,5 +105,6 @@ public class UserServiceImpl implements UserService {
 		
 		return customUserDetails.getUser();
 	}
+	
 
 }

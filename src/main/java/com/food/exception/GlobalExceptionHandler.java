@@ -121,5 +121,28 @@ public class GlobalExceptionHandler {
 				.body(ex.getMessage());
 	}
 	
+	@ExceptionHandler(exception = UnauthorizedException.class)
+	public ResponseEntity<String> unauthorized(UnauthorizedException ex){
+		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
+				.body(ex.getMessage());
+	}
+	
+	@ExceptionHandler(exception = RoleAlreadyAssignedException.class)
+	public ResponseEntity<String> roleAlreadyAssigned(RoleAlreadyAssignedException ex){
+		return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
+				.body(ex.getMessage());
+	}
+	
+	@ExceptionHandler(exception = RoleRequestAlreadyPendingException.class)
+	public ResponseEntity<String> roleRequestAlreadyPending(RoleRequestAlreadyPendingException ex){
+		return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
+				.body(ex.getMessage());
+	}
+	
+	@ExceptionHandler(exception = InvalidRoleRequestException.class)
+	public ResponseEntity<String> invalidRoleRequest(InvalidRoleRequestException ex){
+		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
+				.body(ex.getMessage());
+	}
 	
 }
