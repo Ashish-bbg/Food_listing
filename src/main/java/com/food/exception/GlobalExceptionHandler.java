@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -143,6 +144,16 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<String> invalidRoleRequest(InvalidRoleRequestException ex){
 		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
 				.body(ex.getMessage());
+	}
+	
+	@ExceptionHandler(exception = RoleRequestNotFoundException.class)
+	public ResponseEntity<String> roleRequestNotFound(RoleRequestNotFoundException ex){
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+	}
+	
+	@ExceptionHandler(exception = RoleRequestNotPendingException.class)
+	public ResponseEntity<String> roleRequestNotPending(RoleRequestNotPendingException ex){
+		return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).body(ex.getMessage());
 	}
 	
 }

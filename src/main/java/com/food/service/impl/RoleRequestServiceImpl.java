@@ -55,14 +55,14 @@ public class RoleRequestServiceImpl implements RoleRequestService{
 			throw new RoleAlreadyAssignedException("You are already a " + createRoleRequest.getRequestedRole());
 		}
 		
-		if(roleRequestRepository.existsByUserIdAndStatus(
+		if(roleRequestRepository.existsByUser_IdAndStatus(
 				user.getId(),
 				RoleRequestStatus.PENDING)) {
 			throw new RoleRequestAlreadyPendingException("Your role request is already pending");
 		}
 		
 		RoleRequest roleRequest = RoleRequest.builder()
-				.userId(user.getId())
+				.user(user)
 				.requestedRole(createRoleRequest.getRequestedRole())
 				.status(RoleRequestStatus.PENDING)
 				.createdAt(LocalDateTime.now())				
