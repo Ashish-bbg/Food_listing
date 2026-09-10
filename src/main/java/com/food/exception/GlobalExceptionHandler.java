@@ -130,13 +130,13 @@ public class GlobalExceptionHandler {
 	
 	@ExceptionHandler(exception = RoleAlreadyAssignedException.class)
 	public ResponseEntity<String> roleAlreadyAssigned(RoleAlreadyAssignedException ex){
-		return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
+		return ResponseEntity.status(HttpStatus.CONFLICT)
 				.body(ex.getMessage());
 	}
 	
 	@ExceptionHandler(exception = RoleRequestAlreadyPendingException.class)
 	public ResponseEntity<String> roleRequestAlreadyPending(RoleRequestAlreadyPendingException ex){
-		return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
+		return ResponseEntity.status(HttpStatus.CONFLICT)
 				.body(ex.getMessage());
 	}
 	
@@ -153,7 +153,7 @@ public class GlobalExceptionHandler {
 	
 	@ExceptionHandler(exception = RoleRequestNotPendingException.class)
 	public ResponseEntity<String> roleRequestNotPending(RoleRequestNotPendingException ex){
-		return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).body(ex.getMessage());
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
 	}
 	
 }

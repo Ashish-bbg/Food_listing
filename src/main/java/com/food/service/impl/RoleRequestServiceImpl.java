@@ -1,10 +1,11 @@
 package com.food.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.food.dto.request.CreateRoleRequest;
@@ -19,7 +20,7 @@ import com.food.exception.RoleRequestAlreadyPendingException;
 import com.food.exception.UserNotFoundException;
 import com.food.repository.RoleRequestRepository;
 import com.food.repository.UserRepository;
-import com.food.security.CustomUserDetails;
+import com.food.security.SecurityUtils;
 import com.food.service.RoleRequestService;
 
 import lombok.RequiredArgsConstructor;
@@ -41,12 +42,8 @@ public class RoleRequestServiceImpl implements RoleRequestService{
 	
 	@Override
 	public RoleRequestResponse createRoleRequest(CreateRoleRequest createRoleRequest) {
-		
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		
-		CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-		
-		User user = userRepository.findById(customUserDetails.getUser().getId())
+				
+		User user = userRepository.findById(SecurityUtils.getCurrentUserId())
 				.orElseThrow(()-> new UserNotFoundException("User not found"));
 		
 		checkallowedRole(createRoleRequest);
@@ -70,14 +67,27 @@ public class RoleRequestServiceImpl implements RoleRequestService{
 		
 		RoleRequest savedRequest = roleRequestRepository.save(roleRequest);
 		
-		return RoleRequestResponse.builder()
-		.id(savedRequest.getId())
-		.requestedRole(savedRequest.getRequestedRole())
-		.status(savedRequest.getStatus())
-		.createdAt(savedRequest.getCreatedAt())
-		.build();
+		return toRoleRequestResponse(savedRequest);
 		
 	}
+	
+	@Override
+	public List<RoleRequestResponse> getMyRoleRequests() {
+				
+		UUID userId = SecurityUtils.getCurrentUserId();
+		
+		List<RoleRequest> roleRequests = roleRequestRepository
+				.findByUser_IdOrderByCreatedAtDesc(userId);
+		
+		List<RoleRequestResponse> roleResponseList = new ArrayList<RoleRequestResponse>();
+		
+		for(RoleRequest savedRoleRequest: roleRequests) {
+			roleResponseList.add(toRoleRequestResponse(savedRoleRequest));			
+		}
+				
+		return roleResponseList;
+	}
+
 	
 	private void checkallowedRole(CreateRoleRequest createRoleRequest) {
 		
@@ -89,5 +99,17 @@ public class RoleRequestServiceImpl implements RoleRequestService{
 		throw new InvalidRoleRequestException("Only NGO and EVENT_HOST roles can be requested");
 			
 	}
-
+	
+	private RoleRequestResponse toRoleRequestResponse(RoleRequest roleRequest) {
+		
+		return RoleRequestResponse.builder()
+		.id(roleRequest.getId())
+		.requestedRole(roleRequest.getRequestedRole())
+		.status(roleRequest.getStatus())
+		.createdAt(roleRequest.getCreatedAt())
+		.rejectionReason(roleRequest.getRejectionReason())
+		.build();
+		
+	}
+	
 }

@@ -21,4 +21,6 @@ public interface RoleRequestRepository extends JpaRepository<RoleRequest, UUID> 
 	""")
 	List<RoleRequest> findByStatusWithUser(RoleRequestStatus status);
 	
+	List<RoleRequest> findByUser_IdOrderByCreatedAtDesc(UUID userId);
+	
 }

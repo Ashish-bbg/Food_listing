@@ -2,6 +2,7 @@ package com.food.dto.response;
 
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.food.enums.RoleRequestStatus;
 import com.food.enums.UserRole;
 
@@ -18,6 +19,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserResponse {
 
 	private UUID id;

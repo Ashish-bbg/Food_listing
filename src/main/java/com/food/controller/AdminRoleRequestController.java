@@ -8,13 +8,16 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.food.dto.response.AdminRoleRequestResponse;
+import com.food.dto.response.RejectRoleRequest;
 import com.food.dto.response.RoleRequestResponse;
 import com.food.service.AdminRoleRequestService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -38,10 +41,16 @@ public class AdminRoleRequestController {
 		
 	}
 	
-	@PostMapping("/{requestedId}/reject")
+	@PostMapping("/{requestId}/reject")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<RoleRequestResponse> rejectRoleRequest(@PathVariable UUID requestId){
-		return null;
+	public ResponseEntity<RoleRequestResponse> rejectRoleRequest(
+			@PathVariable UUID requestId,
+			@Valid @RequestBody RejectRoleRequest rejectRoleRequest
+			){
+		
+		RoleRequestResponse roleRequestResponse = adminRoleRequestService.rejectRoleRequest(requestId, rejectRoleRequest);
+		return ResponseEntity.ok(roleRequestResponse);
+		
 	}
 
 }

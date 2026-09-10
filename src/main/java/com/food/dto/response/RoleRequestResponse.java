@@ -3,6 +3,7 @@ package com.food.dto.response;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.food.enums.RoleRequestStatus;
 import com.food.enums.UserRole;
 
@@ -17,6 +18,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class RoleRequestResponse {
 
 	private UUID id;
@@ -26,5 +28,7 @@ public class RoleRequestResponse {
 	private RoleRequestStatus status;
 		
 	private LocalDateTime createdAt;
+	
+	private String rejectionReason;
 	
 }
