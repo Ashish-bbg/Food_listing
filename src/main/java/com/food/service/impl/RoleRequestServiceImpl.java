@@ -3,7 +3,6 @@ package com.food.service.impl;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -33,20 +32,15 @@ public class RoleRequestServiceImpl implements RoleRequestService{
 	
 	private final UserRepository userRepository;
 	
-	private static final Set<UserRole> ALLOWED_APPROVED_ROLES = Set.of(
-			
-			UserRole.EVENT_HOST,
-			UserRole.NGO
-			);
-
-	
 	@Override
 	public RoleRequestResponse createRoleRequest(CreateRoleRequest createRoleRequest) {
 				
 		User user = userRepository.findById(SecurityUtils.getCurrentUserId())
 				.orElseThrow(()-> new UserNotFoundException("User not found"));
 		
-		checkallowedRole(createRoleRequest);
+		if(createRoleRequest.getRequestedRole() != UserRole.EVENT_HOST) {
+			throw new InvalidRoleRequestException("Only EVENT_HOST roles can be requested");
+		}
 		
 		if(user.getRole() == createRoleRequest.getRequestedRole()) {
 			throw new RoleAlreadyAssignedException("You are already a " + createRoleRequest.getRequestedRole());
@@ -88,18 +82,6 @@ public class RoleRequestServiceImpl implements RoleRequestService{
 		return roleResponseList;
 	}
 
-	
-	private void checkallowedRole(CreateRoleRequest createRoleRequest) {
-		
-		if(ALLOWED_APPROVED_ROLES.contains(createRoleRequest.getRequestedRole())) {
-			return;
-			
-		}
-		
-		throw new InvalidRoleRequestException("Only NGO and EVENT_HOST roles can be requested");
-			
-	}
-	
 	private RoleRequestResponse toRoleRequestResponse(RoleRequest roleRequest) {
 		
 		return RoleRequestResponse.builder()

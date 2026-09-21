@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.food.entity.RoleRequest;
 import com.food.enums.RoleRequestStatus;
+import com.food.enums.UserRole;
 
 public interface RoleRequestRepository extends JpaRepository<RoleRequest, UUID> {
 
@@ -23,4 +24,9 @@ public interface RoleRequestRepository extends JpaRepository<RoleRequest, UUID> 
 	
 	List<RoleRequest> findByUser_IdOrderByCreatedAtDesc(UUID userId);
 	
+	boolean existsByUser_IdAndRequestedRoleAndStatus(
+			UUID userId,
+			UserRole requestedRole,
+			RoleRequestStatus status
+			);
 }

@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -155,5 +154,12 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<String> roleRequestNotPending(RoleRequestNotPendingException ex){
 		return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
 	}
+	
+	@ExceptionHandler(exception = NgoVerificationAlreadyExistsException.class)
+	public ResponseEntity<String> roleRequestNotPending(NgoVerificationAlreadyExistsException ex){
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+	}
+	
+	
 	
 }

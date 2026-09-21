@@ -16,6 +16,8 @@ import com.food.dto.response.RoleRequestResponse;
 import com.food.entity.RoleRequest;
 import com.food.entity.User;
 import com.food.enums.RoleRequestStatus;
+import com.food.enums.UserRole;
+import com.food.exception.InvalidRoleRequestException;
 import com.food.exception.RoleRequestNotFoundException;
 import com.food.exception.RoleRequestNotPendingException;
 import com.food.repository.RoleRequestRepository;
@@ -83,7 +85,15 @@ public class AdminRoleRequestImpl implements AdminRoleRequestService{
 		
 		User user = roleRequest.getUser();
 		
-		user.setRole(roleRequest.getRequestedRole());
+		UserRole role = roleRequest.getRequestedRole();
+		
+		if(
+				role != UserRole.EVENT_HOST ||
+				role != UserRole.NGO) {
+			throw new InvalidRoleRequestException("Invalid Role Request only EVENT and NGO are allowed");
+		}
+			
+		user.setRole(role);
 	
 		roleRequest.setStatus(RoleRequestStatus.APPROVED);
 		roleRequest.setReviewedBy(adminId);
